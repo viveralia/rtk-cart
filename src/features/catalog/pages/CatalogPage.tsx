@@ -37,7 +37,7 @@ const CatalogPage: FC = () => {
         {error && <Text>{error}</Text>}
         {isLoading && <Text>Loading...</Text>}
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} onAddToCart={console.log} />
+          <ProductCard key={product.id} product={product} onAddToCart={(p) => console.log(p)} />
         ))}
       </ProductsContainer>
     </Container>

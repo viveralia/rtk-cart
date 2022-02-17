@@ -22,9 +22,9 @@ const CartPage: FC = () => {
               <CartProductItem
                 key={cartProduct.id}
                 cartProduct={cartProduct}
-                onDecrementQuantity={console.log}
-                onIncrementQuantity={console.log}
-                onRemoveItem={console.log}
+                onDecrementQuantity={(p) => console.log(p)}
+                onIncrementQuantity={(p) => console.log(p)}
+                onRemoveItem={(p) => console.log(p)}
               />
             ))}
           </CartProductList>
