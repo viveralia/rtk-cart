@@ -1,11 +1,15 @@
 import { FC, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { Container, Header, Text, Title } from "../../../components";
+import { addProduct } from "../../cart/cartSlice";
 import ProductCard from "../components/ProductCard";
 import { Product } from "../types/product";
 import { ProductsContainer } from "./CatalogPage.styles";
 
 const CatalogPage: FC = () => {
+  const dispatch = useDispatch();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,7 +41,11 @@ const CatalogPage: FC = () => {
         {error && <Text>{error}</Text>}
         {isLoading && <Text>Loading...</Text>}
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} onAddToCart={(p) => console.log(p)} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            onAddToCart={(p) => dispatch(addProduct({ ...p, quantity: 1 }))}
+          />
         ))}
       </ProductsContainer>
     </Container>

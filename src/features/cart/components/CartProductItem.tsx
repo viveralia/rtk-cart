@@ -35,7 +35,7 @@ const CartProductItem: FC<CartProductItemProps> = ({
         <p>{currencyFormatter.format(cartProduct.price)}</p>
         <div>
           <CartProductItemButton onClick={handleDecrement}>&minus;</CartProductItemButton>
-          <span> 0 </span>
+          <span> {cartProduct.quantity} </span>
           <CartProductItemButton onClick={handleIncrement}>&#x2B;</CartProductItemButton>
         </div>
       </CartProductItemBody>
