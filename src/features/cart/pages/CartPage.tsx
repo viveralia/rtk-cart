@@ -1,25 +1,44 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../app/store";
 
 import { Button, Container, Header, Text, Title } from "../../../components";
 import { currencyFormatter } from "../../../utils/formatters";
-import { clearCart, removeProduct } from "../cartSlice";
+import { clearCart, decrementQuantity, incrementQuantity, removeProduct } from "../cartSlice";
 import CartProductItem from "../components/CartProductItem";
+import { CartProduct } from "../types/cart-product";
 import { CartProductList, StickyContainer } from "./CartPage.styles";
 
 const CartPage: FC = () => {
   const { products } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
 
-  const numberOfProducts = products.reduce(
-    (previousValue, currentValue) => previousValue + currentValue.quantity,
-    0
+  const numberOfProducts = products.reduce((p, c) => p + c.quantity, 0);
+  const totalToPay = products.reduce((p, c) => p + c.quantity * c.price, 0);
+
+  const handleClearCart = useCallback(() => {
+    dispatch(clearCart());
+  }, [dispatch]);
+
+  const handleDecrement = useCallback(
+    (product: CartProduct) => {
+      dispatch(decrementQuantity({ ...product, quantity: 1 }));
+    },
+    [dispatch]
   );
 
-  const total = products.reduce(
-    (previousValue, currentValue) => previousValue + currentValue.quantity * currentValue.price,
-    0
+  const handleIncrement = useCallback(
+    (product: CartProduct) => {
+      dispatch(incrementQuantity({ ...product, quantity: 1 }));
+    },
+    [dispatch]
+  );
+
+  const handleRemove = useCallback(
+    (product: CartProduct) => {
+      dispatch(removeProduct(product));
+    },
+    [dispatch]
   );
 
   return (
@@ -28,7 +47,7 @@ const CartPage: FC = () => {
         <div>
           <Header>
             <Title>Cart ({numberOfProducts})</Title>
-            <Button disabled={products.length === 0} onClick={() => dispatch(clearCart())}>
+            <Button disabled={numberOfProducts === 0} onClick={handleClearCart}>
               Clear cart
             </Button>
           </Header>
@@ -38,14 +57,14 @@ const CartPage: FC = () => {
               <CartProductItem
                 key={cartProduct.id}
                 cartProduct={cartProduct}
-                onDecrementQuantity={(p) => console.log(p)}
-                onIncrementQuantity={(p) => console.log(p)}
-                onRemoveItem={(p) => dispatch(removeProduct(p))}
+                onDecrementQuantity={handleDecrement}
+                onIncrementQuantity={handleIncrement}
+                onRemoveItem={handleRemove}
               />
             ))}
           </CartProductList>
         </div>
-        {products.length > 0 && <Button>Pay {currencyFormatter.format(total)}</Button>}
+        {numberOfProducts > 0 && <Button>Pay {currencyFormatter.format(totalToPay)}</Button>}
       </StickyContainer>
     </Container>
   );
