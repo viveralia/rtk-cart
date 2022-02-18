@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { FC } from "react";
 
 import { currencyFormatter } from "../../../utils/formatters";
@@ -28,19 +29,52 @@ const CartProductItem: FC<CartProductItemProps> = ({
   const handleRemove = () => onRemoveItem(cartProduct);
 
   return (
-    <CartProductItemContainer>
-      <CartProductItemImg src={cartProduct.image} alt={cartProduct.title} />
-      <CartProductItemBody>
-        <CartProductItemName>{cartProduct.title}</CartProductItemName>
-        <p>{currencyFormatter.format(cartProduct.price)}</p>
-        <div>
-          <CartProductItemButton onClick={handleDecrement}>&minus;</CartProductItemButton>
-          <span> {cartProduct.quantity} </span>
-          <CartProductItemButton onClick={handleIncrement}>&#x2B;</CartProductItemButton>
-        </div>
-      </CartProductItemBody>
-      <CartProductItemButton onClick={handleRemove}>x</CartProductItemButton>
-    </CartProductItemContainer>
+    <AnimatePresence>
+      <CartProductItemContainer
+        as={motion.article}
+        key={cartProduct.id}
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.15 }}
+      >
+        <CartProductItemImg
+          as={motion.img}
+          key={cartProduct.quantity}
+          animate={{ opacity: 1 }}
+          initial={{ opacity: 0.25 }}
+          transition={{ duration: 0.25 }}
+          src={cartProduct.image}
+          alt={cartProduct.title}
+        />
+        <CartProductItemBody>
+          <CartProductItemName
+            as={motion.h3}
+            key={cartProduct.quantity}
+            animate={{ opacity: 1 }}
+            initial={{ opacity: 0.25 }}
+            transition={{ duration: 0.25 }}
+          >
+            {cartProduct.title}
+          </CartProductItemName>
+          <p>{currencyFormatter.format(cartProduct.price)}</p>
+          <div>
+            <CartProductItemButton onClick={handleDecrement}>&minus;</CartProductItemButton>
+            <motion.span
+              key={cartProduct.quantity}
+              animate={{ opacity: 1 }}
+              initial={{ opacity: 0.25 }}
+              transition={{ duration: 0.25 }}
+            >
+              {" "}
+              {cartProduct.quantity}{" "}
+            </motion.span>
+            <CartProductItemButton onClick={handleIncrement}>&#x2B;</CartProductItemButton>
+          </div>
+        </CartProductItemBody>
+        <CartProductItemButton onClick={handleRemove}>x</CartProductItemButton>
+      </CartProductItemContainer>
+    </AnimatePresence>
   );
 };
 

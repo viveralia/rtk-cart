@@ -1,7 +1,8 @@
+import { motion } from "framer-motion";
 import { FC, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../app/store";
 
+import { RootState } from "../../../app/store";
 import { Button, Container, Header, Text, Title } from "../../../components";
 import { currencyFormatter } from "../../../utils/formatters";
 import { clearCart, decrementQuantity, incrementQuantity, removeProduct } from "../cartSlice";
@@ -46,13 +47,23 @@ const CartPage: FC = () => {
       <StickyContainer>
         <div>
           <Header>
-            <Title>Cart ({numberOfProducts})</Title>
+            <Title>
+              Cart{" "}
+              <motion.span
+                key={numberOfProducts}
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0.25 }}
+                transition={{ duration: 0.25 }}
+              >
+                ({numberOfProducts})
+              </motion.span>
+            </Title>
             <Button disabled={numberOfProducts === 0} onClick={handleClearCart}>
               Clear cart
             </Button>
           </Header>
           <CartProductList>
-            {products.length === 0 && <Text>Your cart is empty</Text>}
+            {!numberOfProducts && <Text>Your cart is empty</Text>}
             {products.map((cartProduct) => (
               <CartProductItem
                 key={cartProduct.id}
@@ -64,7 +75,19 @@ const CartPage: FC = () => {
             ))}
           </CartProductList>
         </div>
-        {numberOfProducts > 0 && <Button>Pay {currencyFormatter.format(totalToPay)}</Button>}
+        {!!numberOfProducts && (
+          <Button>
+            Pay{" "}
+            <motion.span
+              key={totalToPay}
+              animate={{ opacity: 1 }}
+              initial={{ opacity: 0.25 }}
+              transition={{ duration: 0.25 }}
+            >
+              {currencyFormatter.format(totalToPay)}
+            </motion.span>
+          </Button>
+        )}
       </StickyContainer>
     </Container>
   );
