@@ -12,15 +12,21 @@ import {
 } from "redux-persist";
 
 import cartReducer from "../features/cart/cartSlice";
+import { catalogApi } from "../features/catalog/catalogApi";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import { categoriesApi } from "../features/categories/categoriesApi";
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
+  blacklist: [catalogApi.reducerPath, categoriesApi.reducerPath],
 };
 
 const rootReducer = combineReducers({
   cart: cartReducer,
+  [catalogApi.reducerPath]: catalogApi.reducer,
+  [categoriesApi.reducerPath]: categoriesApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -32,12 +38,12 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(catalogApi.middleware, categoriesApi.middleware),
 });
+
+setupListeners(store.dispatch);
 
 export const persistor = persistStore(store);
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;

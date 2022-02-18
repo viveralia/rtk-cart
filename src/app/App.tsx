@@ -2,9 +2,8 @@ import { FC } from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { CartPage } from "../features/cart";
-import { CatalogPage } from "../features/catalog";
-import { AppContainer, GlobalStyle } from "./App.styles";
+import { GlobalStyle } from "./App.styles";
+import AppRouter from "./routes/AppRouter";
 import { store, persistor } from "./store";
 
 const App: FC = () => {
@@ -12,10 +11,7 @@ const App: FC = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <GlobalStyle />
-        <AppContainer>
-          <CatalogPage />
-          <CartPage />
-        </AppContainer>
+        <AppRouter />
       </PersistGate>
     </Provider>
   );
