@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Category } from "./types/category";
+
+import { Category } from "../categories/types";
 import { Product } from "./types/product";
 
 export const catalogApi = createApi({
